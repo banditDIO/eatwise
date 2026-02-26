@@ -1,45 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EatWise - Smart Nutrition Planner</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <div class="container">
 
-  <h1 class="logo">🍎 EatWise</h1>
+  <h1 class="logo">🍎 EatWise Pro</h1>
 
-  <!-- USER PROFILE -->
+  <!-- PROFILE -->
   <div class="card">
     <h2>Profile</h2>
-    <input type="number" id="weight" placeholder="Weight (kg)">
-    <input type="number" id="height" placeholder="Height (cm)">
-    <input type="number" id="age" placeholder="Age">
-    
+
+    <input type="number" id="weight" placeholder="Weight (kg)" />
+    <input type="number" id="height" placeholder="Height (cm)" />
+    <input type="number" id="age" placeholder="Age" />
+
     <select id="gender">
       <option value="male">Male</option>
       <option value="female">Female</option>
     </select>
 
-    <select id="goal">
-      <option value="maintain">Maintain Weight</option>
-      <option value="lose">Lose Weight</option>
-      <option value="gain">Gain Muscle</option>
+    <select id="activity">
+      <option value="1.2">Sedentary</option>
+      <option value="1.375">Lightly Active</option>
+      <option value="1.55">Moderately Active</option>
+      <option value="1.725">Very Active</option>
     </select>
 
-    <button onclick="calculateCalories()">Calculate</button>
+    <select id="goal">
+      <option value="maintain">Maintain</option>
+      <option value="lose">Lose (-500)</option>
+      <option value="gain">Gain (+300)</option>
+    </select>
 
+    <button id="calculateBtn">Calculate</button>
     <p id="calorieResult"></p>
+    <p id="macroResult"></p>
   </div>
 
-  <!-- MEAL PLANNER -->
+  <!-- MEALS -->
   <div class="card">
     <h2>Meal Planner</h2>
-
     <select id="foodSelect"></select>
-    <button onclick="addMeal()">Add Meal</button>
+    <button id="addMealBtn">Add Meal</button>
 
     <ul id="mealList"></ul>
     <h3>Total Calories: <span id="totalCalories">0</span></h3>
@@ -48,15 +56,13 @@
   <!-- WORKOUT -->
   <div class="card">
     <h2>Workout Planner</h2>
-
     <select id="workoutSelect">
       <option value="300">Running (30 min) - 300 cal</option>
       <option value="250">Cycling (30 min) - 250 cal</option>
       <option value="200">HIIT (20 min) - 200 cal</option>
       <option value="150">Yoga (45 min) - 150 cal</option>
     </select>
-
-    <button onclick="addWorkout()">Add Workout</button>
+    <button id="addWorkoutBtn">Add Workout</button>
 
     <ul id="workoutList"></ul>
     <h3>Calories Burned: <span id="totalBurned">0</span></h3>
@@ -65,10 +71,10 @@
   <!-- DASHBOARD -->
   <div class="card dashboard">
     <h2>Daily Summary</h2>
-    <p>Target Calories: <span id="targetDisplay">0</span></p>
+    <p>Target: <span id="targetDisplay">0</span></p>
     <p>Consumed: <span id="consumedDisplay">0</span></p>
     <p>Burned: <span id="burnedDisplay">0</span></p>
-    <h3>Net Calories: <span id="netDisplay">0</span></h3>
+    <h3>Net: <span id="netDisplay">0</span></h3>
   </div>
 
 </div>
