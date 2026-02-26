@@ -1,130 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EatWise – Smart Diet Planning</title>
-  <link rel="stylesheet" href="./styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍏</text></svg>">
+  <meta charset="UTF-8">
+  <title>EatWise - Smart Nutrition Planner</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="container">
-    <h1>🍏 EatWise</h1>
-    <p class="subtitle">Plan smarter meals using real nutrition data and your fitness level.</p>
-  </header>
 
-  <main class="container grid">
-    <!-- Left panel: Planner -->
-    <section class="card">
-      <h2>🎯 Plan Your Day</h2>
-      <form id="plannerForm" class="form">
-        <div class="row">
-          <label for="sex">Sex</label>
-          <select id="sex" required>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
-        </div>
+<div class="container">
 
-        <div class="row">
-          <label for="age">Age</label>
-          <input id="age" type="number" min="10" max="100" value="20" required/>
-        </div>
+  <h1 class="logo">🍎 EatWise</h1>
 
-        <div class="row">
-          <label for="height">Height (cm)</label>
-          <input id="height" type="number" min="120" max="230" value="175" required/>
-        </div>
+  <!-- USER PROFILE -->
+  <div class="card">
+    <h2>Profile</h2>
+    <input type="number" id="weight" placeholder="Weight (kg)">
+    <input type="number" id="height" placeholder="Height (cm)">
+    <input type="number" id="age" placeholder="Age">
+    
+    <select id="gender">
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
 
-        <div class="row">
-          <label for="weight">Weight (kg)</label>
-          <input id="weight" type="number" min="30" max="250" value="70" required/>
-        </div>
+    <select id="goal">
+      <option value="maintain">Maintain Weight</option>
+      <option value="lose">Lose Weight</option>
+      <option value="gain">Gain Muscle</option>
+    </select>
 
-        <div class="row">
-          <label for="activity">Fitness level</label>
-          <select id="activity" required>
-            <option value="sedentary">Beginner / Sedentary</option>
-            <option value="light">Lightly Active</option>
-            <option value="moderate" selected>Moderately Active</option>
-            <option value="very">Very Active</option>
-            <option value="athlete">Athlete</option>
-          </select>
-        </div>
+    <button onclick="calculateCalories()">Calculate</button>
 
-        <div class="row">
-          <label for="goal">Goal</label>
-          <select id="goal" required>
-            <option value="cut">Lose fat</option>
-            <option value="recomp" selected>Maintain / Recomp</option>
-            <option value="bulk">Gain muscle</option>
-          </select>
-        </div>
+    <p id="calorieResult"></p>
+  </div>
 
-        <button type="submit" class="btn primary">Calculate Targets</button>
-      </form>
+  <!-- MEAL PLANNER -->
+  <div class="card">
+    <h2>Meal Planner</h2>
 
-      <div id="targets" class="targets hidden">
-        <h3>Your Daily Targets</h3>
-        <div class="stats">
-          <div><strong id="kcalTarget">—</strong><span>kcal</span></div>
-          <div><strong id="proteinTarget">—</strong><span>g protein</span></div>
-          <div><strong id="carbTarget">—</strong><span>g carbs</span></div>
-          <div><strong id="fatTarget">—</strong><span>g fat</span></div>
-        </div>
+    <select id="foodSelect"></select>
+    <button onclick="addMeal()">Add Meal</button>
 
-        <div class="row">
-          <button id="genDay" class="btn">Generate Sample Day</button>
-          <button id="savePlan" class="btn">Save Plan</button>
-          <button id="loadPlan" class="btn">Load Saved</button>
-          <button id="clearPlan" class="btn danger">Clear Saved</button>
-        </div>
-      </div>
+    <ul id="mealList"></ul>
+    <h3>Total Calories: <span id="totalCalories">0</span></h3>
+  </div>
 
-      <div id="dayPlan" class="mealplan hidden">
-        <h3>Suggested Day</h3>
-        <ul id="mealList"></ul>
-        <p class="note">Tip: Click foods in the right panel to add/remove them from your plan.</p>
-      </div>
-    </section>
+  <!-- WORKOUT -->
+  <div class="card">
+    <h2>Workout Planner</h2>
 
-    <!-- Right panel: Food Search -->
-    <section class="card">
-      <h2>🥗 Food Search</h2>
-      <input id="search" class="search" placeholder="Search foods (e.g., chicken, apple, rice)"/>
-      <div class="filters">
-        <label>
-          <input type="checkbox" id="hiProtein"/> High protein
-        </label>
-        <label>
-          <input type="checkbox" id="lowCal"/> Low calorie
-        </label>
-      </div>
+    <select id="workoutSelect">
+      <option value="300">Running (30 min) - 300 cal</option>
+      <option value="250">Cycling (30 min) - 250 cal</option>
+      <option value="200">HIIT (20 min) - 200 cal</option>
+      <option value="150">Yoga (45 min) - 150 cal</option>
+    </select>
 
-      <div id="results" class="results"></div>
-    </section>
-  </main>
+    <button onclick="addWorkout()">Add Workout</button>
 
-  <footer class="container">
-    <p>© <span id="year"></span> EatWise • Built for learning & personal planning • No medical advice.</p>
-  </footer>
+    <ul id="workoutList"></ul>
+    <h3>Calories Burned: <span id="totalBurned">0</span></h3>
+  </div>
 
-  <template id="foodTpl">
-    <article class="food">
-      <div class="food-head">
-        <h4 class="name"></h4>
-        <button class="mini addBtn">Add</button>
-      </div>
-      <p class="muted per">per 100 g</p>
-      <div class="kpis">
-        <div><strong class="cal">-</strong><span>kcal</span></div>
-        <div><strong class="pro">-</strong><span>g protein</span></div>
-        <div><strong class="carb">-</strong><span>g carbs</span></div>
-        <div><strong class="fat">-</strong><span>g fat</span></div>
-      </div>
-    </article>
-  </template>
+  <!-- DASHBOARD -->
+  <div class="card dashboard">
+    <h2>Daily Summary</h2>
+    <p>Target Calories: <span id="targetDisplay">0</span></p>
+    <p>Consumed: <span id="consumedDisplay">0</span></p>
+    <p>Burned: <span id="burnedDisplay">0</span></p>
+    <h3>Net Calories: <span id="netDisplay">0</span></h3>
+  </div>
 
-  <script src="./script.js"></script>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
