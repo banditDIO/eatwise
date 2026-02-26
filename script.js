@@ -1,87 +1,130 @@
-const foods = [
-  { name: "Chicken Breast (100g)", calories: 165 },
-  { name: "Rice (1 cup)", calories: 200 },
-  { name: "Egg (1 large)", calories: 78 },
-  { name: "Avocado", calories: 240 },
-  { name: "Apple", calories: 95 },
-  { name: "Salmon (100g)", calories: 208 },
-  { name: "Broccoli (1 cup)", calories: 55 }
-];
+document.addEventListener("DOMContentLoaded", () => {
 
-let totalCalories = 0;
-let totalBurned = 0;
-let targetCalories = 0;
+  const foods = [
+    { name: "Chicken Breast (100g)", calories: 165, protein: 31, carbs: 0, fats: 3.6 },
+    { name: "Rice (1 cup)", calories: 200, protein: 4, carbs: 45, fats: 0.4 },
+    { name: "Egg (1 large)", calories: 78, protein: 6, carbs: 1, fats: 5 },
+    { name: "Avocado", calories: 240, protein: 3, carbs: 12, fats: 22 },
+    { name: "Apple", calories: 95, protein: 0.5, carbs: 25, fats: 0.3 },
+    { name: "Salmon (100g)", calories: 208, protein: 20, carbs: 0, fats: 13 },
+    { name: "Broccoli (1 cup)", calories: 55, protein: 4, carbs: 11, fats: 0.5 }
+  ];
 
-// Load food options
-const foodSelect = document.getElementById("foodSelect");
+  let state = JSON.parse(localStorage.getItem("eatwise")) || {
+    totalCalories: 0,
+    totalBurned: 0,
+    targetCalories: 0
+  };
 
-foods.forEach((food, index) => {
-  let option = document.createElement("option");
-  option.value = index;
-  option.textContent = `${food.name} - ${food.calories} cal`;
-  foodSelect.appendChild(option);
-});
+  const foodSelect = document.getElementById("foodSelect");
+  const mealList = document.getElementById("mealList");
+  const workoutList = document.getElementById("workoutList");
 
-function calculateCalories() {
-  const weight = parseFloat(document.getElementById("weight").value);
-  const height = parseFloat(document.getElementById("height").value);
-  const age = parseFloat(document.getElementById("age").value);
-  const gender = document.getElementById("gender").value;
-  const goal = document.getElementById("goal").value;
+  // Load foods
+  foods.forEach((food, index) => {
+    const option = document.createElement("option");
+    option.value = index;
+    option.textContent = `${food.name} - ${food.calories} cal`;
+    foodSelect.appendChild(option);
+  });
 
-  let bmr;
-
-  if (gender === "male") {
-    bmr = 10 * weight + 6.25 * height - 5 * age + 5;
-  } else {
-    bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+  function saveState() {
+    localStorage.setItem("eatwise", JSON.stringify(state));
   }
 
-  if (goal === "lose") bmr -= 500;
-  if (goal === "gain") bmr += 300;
+  function calculateCalories() {
+    const weight = +document.getElementById("weight").value;
+    const height = +document.getElementById("height").value;
+    const age = +document.getElementById("age").value;
+    const gender = document.getElementById("gender").value;
+    const activity = +document.getElementById("activity").value;
+    const goal = document.getElementById("goal").value;
 
-  targetCalories = Math.round(bmr);
+    if (!weight || !height || !age) {
+      alert("Please fill all profile fields.");
+      return;
+    }
 
-  document.getElementById("calorieResult").innerText =
-    "Daily Target Calories: " + targetCalories;
+    let bmr = gender === "male"
+      ? 10 * weight + 6.25 * height - 5 * age + 5
+      : 10 * weight + 6.25 * height - 5 * age - 161;
 
-  document.getElementById("targetDisplay").innerText = targetCalories;
-}
+    let tdee = bmr * activity;
 
-function addMeal() {
-  const index = foodSelect.value;
-  const food = foods[index];
+    if (goal === "lose") tdee -= 500;
+    if (goal === "gain") tdee += 300;
 
-  totalCalories += food.calories;
+    state.targetCalories = Math.round(tdee);
 
-  const li = document.createElement("li");
-  li.textContent = food.name + " - " + food.calories + " cal";
-  document.getElementById("mealList").appendChild(li);
+    document.getElementById("calorieResult").innerText =
+      `Daily Target: ${state.targetCalories} kcal`;
+
+    const protein = (state.targetCalories * 0.3 / 4).toFixed(0);
+    const carbs = (state.targetCalories * 0.4 / 4).toFixed(0);
+    const fats = (state.targetCalories * 0.3 / 9).toFixed(0);
+
+    document.getElementById("macroResult").innerText =
+      `Macros → Protein: ${protein}g | Carbs: ${carbs}g | Fats: ${fats}g`;
+
+    saveState();
+    updateDisplay();
+  }
+
+  function addMeal() {
+    const food = foods[foodSelect.value];
+    state.totalCalories += food.calories;
+
+    const li = document.createElement("li");
+    li.innerHTML = `${food.name} - ${food.calories} cal 
+      <button class="remove">x</button>`;
+
+    li.querySelector(".remove").addEventListener("click", () => {
+      state.totalCalories -= food.calories;
+      li.remove();
+      updateDisplay();
+    });
+
+    mealList.appendChild(li);
+    updateDisplay();
+  }
+
+  function addWorkout() {
+    const select = document.getElementById("workoutSelect");
+    const calories = +select.value;
+    const text = select.options[select.selectedIndex].text;
+
+    state.totalBurned += calories;
+
+    const li = document.createElement("li");
+    li.innerHTML = `${text} <button class="remove">x</button>`;
+
+    li.querySelector(".remove").addEventListener("click", () => {
+      state.totalBurned -= calories;
+      li.remove();
+      updateDisplay();
+    });
+
+    workoutList.appendChild(li);
+    updateDisplay();
+  }
+
+  function updateDisplay() {
+    document.getElementById("totalCalories").innerText = state.totalCalories;
+    document.getElementById("totalBurned").innerText = state.totalBurned;
+
+    document.getElementById("consumedDisplay").innerText = state.totalCalories;
+    document.getElementById("burnedDisplay").innerText = state.totalBurned;
+    document.getElementById("targetDisplay").innerText = state.targetCalories;
+
+    document.getElementById("netDisplay").innerText =
+      state.totalCalories - state.totalBurned;
+
+    saveState();
+  }
+
+  document.getElementById("calculateBtn").addEventListener("click", calculateCalories);
+  document.getElementById("addMealBtn").addEventListener("click", addMeal);
+  document.getElementById("addWorkoutBtn").addEventListener("click", addWorkout);
 
   updateDisplay();
-}
-
-function addWorkout() {
-  const select = document.getElementById("workoutSelect");
-  const calories = parseInt(select.value);
-  const text = select.options[select.selectedIndex].text;
-
-  totalBurned += calories;
-
-  const li = document.createElement("li");
-  li.textContent = text;
-  document.getElementById("workoutList").appendChild(li);
-
-  updateDisplay();
-}
-
-function updateDisplay() {
-  document.getElementById("totalCalories").innerText = totalCalories;
-  document.getElementById("totalBurned").innerText = totalBurned;
-
-  document.getElementById("consumedDisplay").innerText = totalCalories;
-  document.getElementById("burnedDisplay").innerText = totalBurned;
-
-  const net = totalCalories - totalBurned;
-  document.getElementById("netDisplay").innerText = net;
-}
+});
