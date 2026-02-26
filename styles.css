@@ -1,12 +1,65 @@
-.mealplan ul{ list-style:none; margin:0; padding:0; display:grid; gap:8px }
-.meal{
-  background:#0b1320; border:1px solid var(--border); border-radius:10px; padding:10px;
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: white;
+  display: flex;
+  justify-content: center;
+  padding: 40px;
 }
-.meal-row{ display:flex; gap:10px; align-items:center }
-.meal-row .grow{ flex:1 }
-.gInput{
-  width:90px; padding:6px 8px; border-radius:8px; border:1px solid var(--border);
-  background:#091524; color:var(--text); margin-right:8px;
+
+.container {
+  width: 1000px;
 }
-.meal-kpis{ display:flex; gap:16px; color:var(--muted); margin-top:6px }
-.meal.total{ border:1px dashed #35506b; background:#0a1522 }
+
+.logo {
+  text-align: center;
+  font-size: 40px;
+  margin-bottom: 30px;
+}
+
+.card {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(15px);
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+input, select, button {
+  padding: 10px;
+  margin: 8px 5px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+}
+
+button {
+  background: #00ffcc;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #00ccaa;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: rgba(255,255,255,0.15);
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 8px;
+}
+
+.dashboard {
+  text-align: center;
+  font-size: 18px;
+}
